@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Exercicio 1</title>
+		<link rel="stylesheet" href="../css/bootstrap.css">
+		<link rel="stylesheet" href="../css/bootstrap-theme.css"> 
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
+		<style>
+		table td{
+			white-space: nowrap;
+  			overflow: hidden;
+  			text-overflow: ellipsis;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+
+			<div class="row">
+				<div class="col-md-12 col-md-offset-0">
+
+					<div class="header clearfix">
+						<h3 class="text-muted">Exercicio 1</h3>
+					</div>
+
+					<div class="row">
+						<div class="panel panel-default">
+					  		<div class="panel-body">
+								<form>
+								<div class="row">
+									<div class="col-md-4" >
+										<label for="usuario">Usuário</label>
+										<input type="text" class="form-control " name="usuario" id="usuario" />
+									</div>
+									<div class="col-md-6">
+										<label for="repositorio">Repositório</label>
+										<input type="text" class="form-control" name="repositorio" id="repositorio" />
+									</div>
+
+									<div class="col-md-2">
+										<label for="repositorio">&nbsp;</label>
+										<input type="button" class="form-control btn btn-primary" id="btnBuscar" onclick="vaibuscarasissues()" value="Buscar"></input>
+									</div>
+								</form>
+							</div>
+						</div>	
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-body">
+									<table class="table table-striped" id="table" style="table-layout:fixed;">
+										<caption><h4>Issues</h4></caption>
+										<thead>
+											<tr>
+												<th width="50">#</th>
+												<th width="416">Titulo</th>
+												<th>Descrição</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr id="trTemplate" style="display:none">
+												<th scope="row" id="id">330</th>
+												<td id="titulo">Added test for json_views.list_issue_card</td>
+												<td id="descricao"></td>
+											</tr>
+											
+										</tbody>
+									</table>
+								</div>
+							</div>	
+						</div>
+					</div>	
+				</div>
+			</div>
+		</div>	
+
+
+
+		<script>
+
+
+		function vaibuscarasissues() {
+
+			function GithubRepo(username, reponame){
+				this.username = username;
+				this.reponame = reponame;
+			}
+
+			GithubRepo.prototype.buscar_issues = function() {
+				var _this = this;
+				console.log(_this.username);
+				$.get("https://api.github.com/repos/"+_this.username+"/"+_this.reponame+"/issues", function(data){
+						issues = data;
+						_this.limparTabela("table");
+						_this.populaTabela("table");
+					});
+			};
+
+			GithubRepo.prototype.populaTabela = function(idTable) {
+						
+				var $table = $("#"+idTable);
+				
+				for(var index in issues){
+					
+					var issue = issues[index];
+
+					var $trTemplate = $table.find("#trTemplate").clone();
+
+					$trTemplate.find("#id").html(issue.number);
+					$trTemplate.find("#titulo").html(issue.title);
+					$trTemplate.find("#descricao").html(issue.body);
+					$trTemplate.removeAttr("style","");
+					$trTemplate.removeAttr("id","");
+					$trTemplate.insertBefore($table.find("#trTemplate"));
+				}
+				
+			}
+
+			GithubRepo.prototype.limparTabela = function(idTable) {
+				$("#"+idTable+" > tbody > tr").each(function(){
+					var idTr = $(this).attr("id");
+					if(idTr != "trTemplate"){
+						$(this).remove();
+					}
+
+				});
+
+
+			}
+
+			var usuario = $("#usuario").val();
+			var repositorio = $("#repositorio").val();
+
+			if(usuario == "" || repositorio == ""){
+				alert('Usuário e repositório obrigatórios');
+			}else{
+				var le_repo = new GithubRepo(usuario, repositorio);
+				le_repo.buscar_issues();
+			}
+
+			
+		}
+
+		</script>
+
+
+
+
+	</body>
+</html>
