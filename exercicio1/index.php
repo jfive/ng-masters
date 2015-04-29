@@ -28,6 +28,7 @@
 						<div class="list-group">
 							<a href="exercicio1.html" class="list-group-item">Versão 1</a>
 							<a href="exercicio1_1.html" class="list-group-item">Versão 2</a>
+							<a href="exercicio1_2.html" class="list-group-item">Versão 3</a>
 						</div>
 					</div>
 
